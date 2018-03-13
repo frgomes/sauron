@@ -17,7 +17,7 @@ package object sauron {
     def split(accessor: c.Tree): List[c.TermName] = accessor match {      // (_.p.q.r) -> List(p, q, r)
       case q"$pq.$r" => split(pq) :+ r
       case _: Ident => Nil
-      case _ => c.abort(c.enclosingPosition, s"Unsupported path element: $accessor")
+      case _ => c.abort(c.enclosingPosition, s"[sauron] Unsupported path element: $accessor")
     }
 
     def nest(prefix: c.Tree, f: TermName, suffix: List[TermName]): c.Tree = suffix match {
@@ -30,7 +30,7 @@ package object sauron {
         val f = TermName(c.freshName())
         val fParamTree = q"val $f = ${q""}"
         q"{$fParamTree => ${nest(obj.tree, f, split(accessor))}}"
-      case _ => c.abort(c.enclosingPosition, s"Path must have shape: _.a.b.c.(...); got: ${path.tree}")
+      case _ => c.abort(c.enclosingPosition, s"[sauron] Path must have shape: _.a.b.c.(...); got: ${path.tree}")
     }
   }
 
